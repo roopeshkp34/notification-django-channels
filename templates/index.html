@@ -1,0 +1,64 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstap/4.5.2/css/bootstap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <h1>Home</h1>
+    <button id="click">Test</button>
+    <audio id="audio" src="{% static 'audio/mixkit-game-notification-wave-alarm-987.wav' %}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            // const audio = new Audio(".\\static\\audio\\mixkit-game-notification-wave-alarm-987.wav");
+            const audio = document.getElementById("audio");
+            console.dir(audio);
+            var socket = new WebSocket("ws://127.0.0.1:8000/ws/notification/1/");
+            socket.onopen = function(e) {
+                console.log("Websocket connection established");
+            };
+            socket.onmessage = function(e) {
+                console.log("Message" + e.data);
+                playSound(audio);
+            };
+            
+            socket.onclose = function(e) {
+                console.log("websocket connection closed");
+            }
+            
+            $("#click").on("click", function(){
+                // playSound();
+                console.log("here");
+            })
+            
+            function simulateUserInteraction() {
+                console.log("called");
+                var event = new MouseEvent('click', {
+                    'view': window,
+                    'bubbles': true,
+                    'cancelable': true 
+                }); 
+                // Dispatch the event on the document object  
+                document.dispatchEvent(event); 
+            }
+            
+        });
+
+
+        function playSound(audio) {
+            if(audio.paused){
+                simulateUserInteraction();
+                audio.play();
+            }else{
+                audio.play();
+            }
+        }
+
+    </script>
+</body>
+</html>
